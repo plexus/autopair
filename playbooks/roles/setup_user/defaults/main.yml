@@ -1,0 +1,7 @@
+---
+# Default vars for the setup_user role
+username: ''
+full_name: ''
+# groups are the same as the ubuntu user. Make sure sudo is here.
+user_groups: 'adm,dialout,cdrom,floppy,sudo,audio,dip,video,plugdev,lxd,netdev'
+login_shell: '/bin/bash'

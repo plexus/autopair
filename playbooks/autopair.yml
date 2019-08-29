@@ -1,0 +1,68 @@
+---
+- hosts: all
+  # Workaround for apt-get bug
+  # https://bugs.launchpad.net/ubuntu/+source/ansible/+bug/1833013
+  # https://github.com/hashicorp/vagrant/issues/10914
+  environment:
+    DEBIAN_FRONTEND: "noninteractive"
+
+  # vars_files:
+  #   - vars/secrets.yml
+
+  become: true
+
+  tasks:
+    - name: Install the lastest versions of listed packages
+      apt:
+        name: "{{ item }}"
+        state: latest
+        update_cache: yes
+      loop:
+        - ansible
+        - curl
+        - emacs
+        - git
+        - htop                  # To view processes
+        - openjdk-8-jdk         # For Clojure
+        - python3
+        - python3-pip
+        - python3-apt
+        - rlwrap                # For clj
+        - screen
+        - unzip                 # for ansible unarchive module
+        - tmate
+
+    - name: Purge installed apps
+      apt:
+        name: "{{ item }}"
+        state: absent
+        purge: yes
+      loop:
+        - ubuntu-web-launchers  # to remove Amazon icon from launcher
+
+    - name: Do a dist-upgrade
+      apt:
+        upgrade: dist
+        update_cache: yes
+
+    # Unfortunately, the apt version of lein is quite old.
+    - name: Set up Leiningen
+      import_role:
+        name: leiningen
+
+    - name: Set up dev user
+      import_role:
+        name: setup_user
+      tags: setup-user
+      vars:
+        username: "dev"
+        full_name: "dev"
+        github_username: "plexus"
+
+    - name: add extra ssh keys
+      authorized_key:
+        user: "dev"
+        key: "https://github.com/{{ item }}.keys"
+      loop:
+        - barrosfelipe
+        - heliosmaster
