@@ -86,6 +86,6 @@
             priv: "ALL"
 
     - openssh_keypair:
-      path: /home/dev/.ssh/id_rsa
-      owner: dev
-      group: dev
+        path: /home/dev/.ssh/id_rsa
+        owner: dev
+        group: dev
