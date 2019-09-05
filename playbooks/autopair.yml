@@ -11,6 +11,11 @@
 
   become: true
 
+  vars:
+    database_name: "dev"
+    database_user: "dev"
+    database_password: "dev"
+
   tasks:
     - name: Install the lastest versions of listed packages
       apt:
@@ -66,3 +71,21 @@
       loop:
         - barrosfelipe
         - heliosmaster
+
+    - name: Install postgres
+      import_role:
+        name: geerlingguy.postgresql
+      tags: postgres
+      vars:
+        postgresql_databases:
+          - name: "{{ database_name }}"
+        postgresql_users:
+          - name: "{{ database_user }}"
+            password: "{{ database_password }}"
+            db: "{{ database_name }}"
+            priv: "ALL"
+
+    - openssh_keypair:
+      path: /home/dev/.ssh/id_rsa
+      owner: dev
+      group: dev

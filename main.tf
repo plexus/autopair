@@ -57,8 +57,8 @@ resource "exoscale_compute" "autopair" {
   display_name = "autopair"
   template = "Linux Ubuntu 18.04 LTS 64-bit"
   zone = "ch-gva-2"
-  size = "Large"
-  disk_size = 50
+  size = "Medium"
+  disk_size = 20
   key_pair = "${var.exoscale_ssh_keypair_name}"
   user_data = "${data.template_file.userdata.rendered}"
 
